@@ -1,9 +1,16 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Mapster;
 using Scalar.AspNetCore;
 
+TypeAdapterConfig.GlobalSettings.Scan(typeof(Program).Assembly);
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddControllers();
 
 builder.Services
-    .AddControllers();
+    .AddValidatorsFromAssemblyContaining<Program>()
+    .AddFluentValidationAutoValidation();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();

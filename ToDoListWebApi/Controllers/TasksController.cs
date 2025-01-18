@@ -1,4 +1,7 @@
+using LinqKit;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using ToDoListWebApi.Requests;
 using Task = ToDoListWebApi.Models.Task;
 using TaskStatus = ToDoListWebApi.Models.TaskStatus;
 
@@ -17,9 +20,22 @@ public class TasksController : ControllerBase
     ];
 
     [HttpGet]
-    [EndpointSummary("Get all the tasks")]
-    public IEnumerable<Task> Get()
-        => tasks;
+    [ProducesResponseType<IEnumerable<Task>>(StatusCodes.Status200OK)]
+    [EndpointSummary("Get tasks")]
+    public IEnumerable<Task> Get([FromQuery] GetTasksRequest getTaskRequest)
+    {
+        var predicate = PredicateBuilder.New<Task>(true);
+
+        if (getTaskRequest.Title is not null)
+            predicate.And(x => x.Title.Contains(getTaskRequest.Title));
+
+        if (getTaskRequest.TaskStatus is not null)
+            predicate.And(x => x.TaskStatus == getTaskRequest.TaskStatus.Value);
+
+        return tasks
+            .Where(predicate)
+            .Take(getTaskRequest.Limit);
+    }
 
     [HttpGet("{id}")]
     [ProducesResponseType<Task>(StatusCodes.Status200OK)]
@@ -35,16 +51,13 @@ public class TasksController : ControllerBase
     [ProducesResponseType<Task>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [EndpointSummary("Create a new task")]
-    public IActionResult Post([FromBody] Task task)
+    public IActionResult Post([FromBody] CreateUpdateTaskRequest createUpdateTaskRequest)
     {
-        task.Id = tasks.Max(x => x.Id) + 1;
-        tasks.Add(task);
+        var newTask = createUpdateTaskRequest.Adapt<Task>();
+        newTask.Id = tasks.Max(x => x.Id) + 1;
+        tasks.Add(newTask);
 
-        var routeValues = new
-        {
-            id = task.Id
-        };
-        return CreatedAtRoute(routeValues, task);
+        return CreatedAtRoute(new { newTask.Id }, newTask);
     }
 
     [HttpPut("{id}")]
@@ -52,14 +65,13 @@ public class TasksController : ControllerBase
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Replace a task by its id")]
-    public IActionResult Put(uint id, [FromBody] Task task)
+    public IActionResult Put(uint id, [FromBody] CreateUpdateTaskRequest createUpdateTaskRequest)
     {
         var taskToUpdate = tasks.Find(x => x.Id == id);
         if (taskToUpdate is null)
             return NotFound();
 
-        taskToUpdate.Title = task.Title;
-        taskToUpdate.TaskStatus = task.TaskStatus;
+        createUpdateTaskRequest.Adapt(taskToUpdate);
 
         return NoContent();
     }
