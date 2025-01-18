@@ -21,8 +21,34 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.Use(async (context, next) =>
+{
+    if (app.Logger.IsEnabled(LogLevel.Debug))
+    {
+        context.Request.EnableBuffering();
+        using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
+        var body = await reader.ReadToEndAsync();
+        context.Request.Body.Position = 0;
+
+        Log.LogRequest(
+            app.Logger,
+            context.Request.Method,
+            context.Request.Path,
+            string.Join(", ", context.Request.Headers.Select(x => $"{x.Key}={x.Value}")),
+            body);
+    }
+
+    await next();
+});
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+public static partial class Log
+{
+    [LoggerMessage(Level = LogLevel.Debug, Message = "{Method} {Path}\nHeaders: {Headers}\nBody: {Body}")]
+    public static partial void LogRequest(ILogger logger, string Method, string Path, string Headers, string Body);
+}
