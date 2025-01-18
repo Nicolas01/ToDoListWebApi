@@ -1,0 +1,59 @@
+root = true
+
+# All files
+[*]
+indent_style         = space
+insert_final_newline = true
+charset              = utf-8
+
+# XML project files
+[*.csproj]
+indent_size = 2
+
+# JSON config files
+[*.json]
+indent_size = 2
+
+# C# code files
+[*.cs]
+indent_size              = 4
+tab_width                = 4
+trim_trailing_whitespace = true
+
+# set the rules severity to warning
+dotnet_analyzer_diagnostic.severity = warning
+
+# IDE0055 Formatting rule
+# Sort using and Import directives with System.* appearing first
+dotnet_sort_system_directives_first = true
+
+# Identifiers should have correct prefix
+dotnet_code_quality.CA1715.exclude_single_letter_type_parameters = true
+
+# Use property instead of Linq Enumerable method
+# Exclude FirstOrDefault and LastOrDefault methods
+dotnet_code_quality.CA1826.exclude_ordefault_methods = true
+
+# Do not directly await a Task
+# only apply this rule to code that produces a console application or a dynamically linked library
+dotnet_code_quality.CA2007.output_kind = ConsoleApplication, DynamicallyLinkedLibrary
+
+# IDE0007 / IDE0008: 'var' preferences
+csharp_style_var_for_built_in_types    = true
+csharp_style_var_when_type_is_apparent = true
+csharp_style_var_elsewhere             = true
+
+# IDE0011: Add braces
+csharp_prefer_braces = when_multiline
+
+# IDE0022: Use expression body for methods
+csharp_style_expression_bodied_methods = when_on_single_line
+
+# IDE0047 and IDE0048: Parentheses preferences
+dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary
+
+# IDE0061: Use expression body for local functions
+csharp_style_expression_bodied_local_functions = when_on_single_line
+
+# IDE0160 / IDE0161: Namespace declaration preferences
+csharp_style_namespace_declarations = file_scoped
