@@ -1,6 +1,63 @@
-@ToDoListWebApi_HostAddress = http://localhost:5284
-
-GET {{ToDoListWebApi_HostAddress}}/weatherforecast/
-Accept: application/json
+# Get a task by id
+GET {{HostAddress}}/tasks/1
 
 ###
+
+# NotFound
+GET {{HostAddress}}/tasks/999
+
+###
+
+# Get tasks by request
+GET {{HostAddress}}/tasks
+
+###
+
+GET {{HostAddress}}/tasks?title=Task
+
+###
+
+GET {{HostAddress}}/tasks?taskstatus=Completed
+
+###
+
+GET {{HostAddress}}/tasks?limit=10
+
+###
+
+# Create a new task
+POST {{HostAddress}}/tasks
+Content-Type: application/json
+{
+    "title": "Task X",
+    "taskStatus": "ReadyToStart"
+}
+
+###
+
+# Update an existing task
+PUT {{HostAddress}}/tasks/1
+Content-Type: application/json
+{
+    "title": "Task 1 updated",
+    "taskStatus": "InProgress"
+}
+
+###
+
+PUT {{HostAddress}}/tasks/999
+Content-Type: application/json
+{
+    "title": "Task updated",
+    "taskStatus": "InProgress"
+}
+
+###
+
+# Delete a task
+DELETE {{HostAddress}}/tasks/4
+
+###
+
+# Delete a task
+DELETE {{HostAddress}}/tasks/999
