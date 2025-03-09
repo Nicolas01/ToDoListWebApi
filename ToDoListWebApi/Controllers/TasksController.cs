@@ -1,5 +1,6 @@
 using LinqKit;
 using Mapster;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using ToDoListWebApi.Requests;
 using Task = ToDoListWebApi.Models.Task;
@@ -51,7 +52,7 @@ public class TasksController : ControllerBase
     [ProducesResponseType<Task>(StatusCodes.Status201Created)]
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [EndpointSummary("Create a new task")]
-    public IActionResult Post([FromBody] CreateUpdateTaskRequest createUpdateTaskRequest)
+    public IActionResult Post(CreateUpdateTaskRequest createUpdateTaskRequest)
     {
         var newTask = createUpdateTaskRequest.Adapt<Task>();
         newTask.Id = tasks.Max(x => x.Id) + 1;
@@ -65,13 +66,35 @@ public class TasksController : ControllerBase
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Replace a task by its id")]
-    public IActionResult Put(uint id, [FromBody] CreateUpdateTaskRequest createUpdateTaskRequest)
+    public IActionResult Put(uint id, CreateUpdateTaskRequest createUpdateTaskRequest)
     {
         var taskToUpdate = tasks.Find(x => x.Id == id);
         if (taskToUpdate is null)
             return NotFound();
 
         createUpdateTaskRequest.Adapt(taskToUpdate);
+
+        return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [EndpointSummary("Update a task by its id")]
+    public IActionResult Patch(uint id, JsonPatchDocument<Task> taskPatchDoccument)
+    {
+        if (taskPatchDoccument is null)
+            return BadRequest();
+
+        var taskToUpdate = tasks.Find(x => x.Id == id);
+        if (taskToUpdate is null)
+            return NotFound();
+
+        taskPatchDoccument.ApplyTo(taskToUpdate, ModelState);
+
+        if (!ModelState.IsValid)
+            return BadRequest(ModelState);
 
         return NoContent();
     }

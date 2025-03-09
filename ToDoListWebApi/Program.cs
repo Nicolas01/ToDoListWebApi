@@ -2,11 +2,15 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Mapster;
 using Scalar.AspNetCore;
+using ToDoListWebApi.Miscellaneous;
 
 TypeAdapterConfig.GlobalSettings.Scan(typeof(Program).Assembly);
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.InputFormatters.Insert(0, JsonPatchInputFormatter.GetJsonPatchInputFormatter());
+});
 
 builder.Services
     .AddValidatorsFromAssemblyContaining<Program>()
@@ -53,9 +57,3 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
-
-public static partial class Log
-{
-    [LoggerMessage(Level = LogLevel.Debug, Message = "{Method} {Path}\nHeaders: {Headers}\nBody: {Body}")]
-    public static partial void LogRequest(ILogger logger, string Method, string Path, string Headers, string Body);
-}
