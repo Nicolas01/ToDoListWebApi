@@ -61,6 +61,9 @@ csharp_style_namespace_declarations = file_scoped
 #### Configuration ####
 
 #### Disable rules ####
+# Use conditional expression for return
+dotnet_diagnostic.IDE0046.severity = suggestion
+
 # Remove unnecessary expression value
-dotnet_diagnostic.IDE0058.severity = none
+dotnet_diagnostic.IDE0058.severity = suggestion
 #### Disable rules ####
