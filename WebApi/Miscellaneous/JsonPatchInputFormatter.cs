@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
-namespace ToDoListWebApi.Miscellaneous;
+namespace WebApi.Miscellaneous;
 
 public static class JsonPatchInputFormatter
 {

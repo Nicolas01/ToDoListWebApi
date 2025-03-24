@@ -1,4 +1,4 @@
-namespace ToDoListWebApi.Miscellaneous;
+namespace WebApi.Miscellaneous;
 
 public static partial class Log
 {

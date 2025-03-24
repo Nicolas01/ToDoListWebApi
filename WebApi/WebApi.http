@@ -13,7 +13,7 @@ GET {{HostAddress}}/tasks
 
 ###
 
-GET {{HostAddress}}/tasks?title=Task
+GET {{HostAddress}}/tasks?title=Job
 
 ###
 
@@ -29,7 +29,7 @@ GET {{HostAddress}}/tasks?limit=10
 POST {{HostAddress}}/tasks
 Content-Type: application/json
 {
-    "title": "Task X",
+    "title": "Job X",
     "taskStatus": "ReadyToStart"
 }
 
@@ -39,7 +39,7 @@ Content-Type: application/json
 PUT {{HostAddress}}/tasks/1
 Content-Type: application/json
 {
-    "title": "Task 1 updated",
+    "title": "Job 1 updated",
     "taskStatus": "InProgress"
 }
 
@@ -48,7 +48,7 @@ Content-Type: application/json
 PUT {{HostAddress}}/tasks/999
 Content-Type: application/json
 {
-    "title": "Task updated",
+    "title": "Job updated",
     "taskStatus": "InProgress"
 }
 

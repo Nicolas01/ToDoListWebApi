@@ -1,9 +1,9 @@
 using FluentValidation;
-using ToDoListWebApi.Requests;
+using WebApi.Requests;
 
-namespace ToDoListWebApi.Validators;
+namespace WebApi.Validators;
 
-public class CreateUpdateTaskRequestValidator : AbstractValidator<CreateUpdateTaskRequest>
+public class CreateUpdateTaskRequestValidator : AbstractValidator<CreateUpdateJobRequest>
 {
     public CreateUpdateTaskRequestValidator()
     {

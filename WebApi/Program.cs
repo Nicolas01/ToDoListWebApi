@@ -2,7 +2,7 @@ using FluentValidation;
 using FluentValidation.AspNetCore;
 using Mapster;
 using Scalar.AspNetCore;
-using ToDoListWebApi.Miscellaneous;
+using WebApi.Miscellaneous;
 
 TypeAdapterConfig.GlobalSettings.Scan(typeof(Program).Assembly);
 
