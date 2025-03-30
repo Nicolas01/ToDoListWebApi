@@ -3,9 +3,9 @@ using WebApi.Requests;
 
 namespace WebApi.Validators;
 
-public class GetTasksRequestValidator : AbstractValidator<GetJobsRequest>
+public class GetJobsRequestValidator : AbstractValidator<GetJobsRequest>
 {
-    public GetTasksRequestValidator()
+    public GetJobsRequestValidator()
     {
         RuleFor(x => x.Title)
             .MinimumLength(2)

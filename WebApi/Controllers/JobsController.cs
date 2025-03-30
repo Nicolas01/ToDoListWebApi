@@ -4,13 +4,11 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using WebApi.Models;
 using WebApi.Requests;
-using JobStatus = WebApi.Models.JobStatus;
 
 namespace WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-[Produces("application/json")]
 public class JobsController : ControllerBase
 {
     private static readonly List<Job> jobs =
@@ -21,7 +19,6 @@ public class JobsController : ControllerBase
     ];
 
     [HttpGet]
-    [ProducesResponseType<IEnumerable<Job>>(StatusCodes.Status200OK)]
     [EndpointSummary("Get jobs")]
     public IEnumerable<Job> Get([FromQuery] GetJobsRequest getJobsRequest)
     {
@@ -39,34 +36,27 @@ public class JobsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Get a job by its id")]
     public ActionResult<Job> Get(uint id)
     {
         var job = jobs.Find(x => x.Id == id);
-        return job is null ? NotFound() : Ok(job);
+        return job is null ? NotFound(id) : Ok(job);
     }
 
     [HttpPost]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     [EndpointSummary("Create a new job")]
-    public ActionResult<Job> Post(CreateUpdateJobRequest createUpdateJobRequest)
+    public ActionResult<Job> Create(CreateUpdateJobRequest createUpdateJobRequest)
     {
         var newJob = createUpdateJobRequest.Adapt<Job>();
         newJob.Id = jobs.Max(x => x.Id) + 1;
         jobs.Add(newJob);
 
-        return CreatedAtRoute(new { newJob.Id }, newJob);
+        return CreatedAtAction(nameof(Get), new { id = newJob.Id }, newJob);
     }
 
     [HttpPut("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Replace a job by its id")]
-    public IActionResult Put(uint id, CreateUpdateJobRequest createUpdateJobRequest)
+    public IActionResult Replace(uint id, CreateUpdateJobRequest createUpdateJobRequest)
     {
         var jobToUpdate = jobs.Find(x => x.Id == id);
         if (jobToUpdate is null)
@@ -78,11 +68,8 @@ public class JobsController : ControllerBase
     }
 
     [HttpPatch("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Update a job by its id")]
-    public IActionResult Patch(uint id, JsonPatchDocument<Job> jobPatchDocument)
+    public IActionResult Update(uint id, JsonPatchDocument<Job> jobPatchDocument)
     {
         if (jobPatchDocument is null)
             return BadRequest();
@@ -100,8 +87,6 @@ public class JobsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
     [EndpointSummary("Delete a job by its id")]
     public IActionResult Delete(uint id)
     {

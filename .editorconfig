@@ -67,3 +67,9 @@ dotnet_diagnostic.IDE0046.severity = suggestion
 # Remove unnecessary expression value
 dotnet_diagnostic.IDE0058.severity = suggestion
 #### Disable rules ####
+
+#### Special files ####
+[ApiConventions.cs]
+dotnet_diagnostic.IDE0060.severity = none
+dotnet_diagnostic.S1186.severity = none
+#### Special files ####

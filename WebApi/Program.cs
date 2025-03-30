@@ -1,15 +1,18 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using Mapster;
+using Microsoft.AspNetCore.Mvc;
 using Scalar.AspNetCore;
 using WebApi.Miscellaneous;
 
+[assembly: ApiConventionType(typeof(ApiConventions))]
 TypeAdapterConfig.GlobalSettings.Scan(typeof(Program).Assembly);
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.InputFormatters.Insert(0, JsonPatchInputFormatter.GetJsonPatchInputFormatter());
+    options.Filters.Add(new ProducesAttribute("application/json"));
 });
 
 builder.Services
@@ -27,8 +30,8 @@ if (app.Environment.IsDevelopment())
     app.MapScalarApiReference(options =>
     {
         options
-            .WithDefaultOpenAllTags(true)
-            .WithTheme(ScalarTheme.Solarized);
+            .WithTheme(ScalarTheme.Solarized)
+            .WithClientButton(false);
     });
 }
 

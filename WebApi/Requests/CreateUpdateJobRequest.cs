@@ -1,4 +1,4 @@
-using JobStatus = WebApi.Models.JobStatus;
+using WebApi.Models;
 
 namespace WebApi.Requests;
 

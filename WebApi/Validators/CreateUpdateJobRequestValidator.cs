@@ -3,9 +3,9 @@ using WebApi.Requests;
 
 namespace WebApi.Validators;
 
-public class CreateUpdateTaskRequestValidator : AbstractValidator<CreateUpdateJobRequest>
+public class CreateUpdateJobRequestValidator : AbstractValidator<CreateUpdateJobRequest>
 {
-    public CreateUpdateTaskRequestValidator()
+    public CreateUpdateJobRequestValidator()
     {
         RuleFor(x => x.Title)
             .MinimumLength(4)
